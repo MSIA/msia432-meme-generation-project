@@ -1,1 +1,8 @@
 /data
+
+#mac
+.DS_Store
+
+#jupyter
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
