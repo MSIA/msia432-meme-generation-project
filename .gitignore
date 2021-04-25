@@ -1,6 +1,9 @@
 #mac
 .DS_Store
 
+#python
+__pycache__/
+
 #jupyter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
