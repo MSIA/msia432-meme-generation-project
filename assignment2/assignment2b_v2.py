@@ -229,9 +229,11 @@ class assign2:
         
     def main(self, num_iter: int=600, freq: int=5, modeltype: str='lstm',
              save_weights: bool=True, load_weights: bool=False, batch_size: int=128,
-             epochs: int=1, maxlen: int=40, step: int=1, temperature: list=[0.2, 0.5, 1.0, 1.2]):
+             epochs: int=1, maxlen: int=40, step: int=1, temperature: list=[0.2, 0.5, 1.0, 1.2],
+             modelname: str=None):
         
-        modelname = 'textgen-figures/' + 'model-text-' + modeltype + '.h5'
+        if modelname is None:
+            modelname = 'textgen-figures/' + 'model-text-' + modeltype + '.h5'
         
         # step 1: preprocess
         X, y = self.vectorize(maxlen, step)
@@ -287,7 +289,7 @@ class assign2:
 # %% id="unsigned-yield"
 obj = assign2()
 obj.model = obj.build_one_layer_lstm(maxlen=40)
-obj.main(num_iter=3, freq=2, modeltype='lstm')
+obj.main(num_iter=1, freq=1, modeltype='lstm', modelname='haha.h5')
 obj.clear()
 
 # %% [markdown] id="answering-parade"
@@ -325,7 +327,7 @@ obj.clear()
 # %% [markdown] id="8sMAunVLVoDe"
 # This is just to demonstrate another way to write model with `keras.model.Sequential`. Personally, I think this method allows us to write the model code more concise.
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="TckdAyd8UwR3" outputId="31d59265-6ac9-48c1-e402-d0226d59c6f4"
+# %% id="TckdAyd8UwR3"
 input_shape = (40, len(obj.chars))
 obj.model = Sequential([
     LSTM(64, input_shape=input_shape),
