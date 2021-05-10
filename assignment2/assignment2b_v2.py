@@ -7,17 +7,16 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.9.1
 #   kernelspec:
-#     display_name: msia432
-#     language: python
-#     name: msia432
+#     display_name: Python 3
+#     name: python3
 # ---
 
-# %% [markdown]
+# %% [markdown] id="empirical-grain"
 # # Assignment2b - V.2
 
-# %%
+# %% id="invalid-pathology"
 import os
 import sys, time, random, gc, socket
 import logging
@@ -37,9 +36,9 @@ from tensorflow.keras.layers import LSTM, Conv2D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import get_file
 
-# %%
+# %% colab={"base_uri": "https://localhost:8080/"} id="demographic-costa" outputId="a4d38e41-fb50-44af-c0c4-89717f70fa95"
 try:
-    %tensorflow_version only exists in Colab.
+    # tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
     IS_COLAB = True
 except Exception:
@@ -54,7 +53,7 @@ if not tf.config.list_physical_devices('GPU'):
 else:
   print('NUM GPUS:', len(tf.config.list_physical_devices('GPU')))
 
-# %%
+# %% id="induced-weight"
 logger = logging.getLogger('my_happy_logger')
 logger.setLevel(logging.DEBUG)
 
@@ -65,20 +64,21 @@ stream_handler.setFormatter(formatter)
 
 logger.addHandler(stream_handler)
 
-# %%
+# %% id="valid-bailey"
 # GPU memory fix + Mac workaround
-os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+if not IS_COLAB:
+    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
-# %%
+# %% id="assisted-princeton"
 os.makedirs('textgen-figures', exist_ok=True)
 
-# %%
+# %% id="significant-sequence"
 np.random.seed(42)
 tf.random.set_seed(42)
 
 
-# %%
+# %% id="manual-record"
 class assign2:
     
     def __init__(self, filename='nietzsche.txt', 
@@ -121,7 +121,7 @@ class assign2:
 
         return X, y
 
-    def build_one_layer_lstm(self, maxlen, hidden_units=128):
+    def build_one_layer_lstm(self, maxlen=40, hidden_units=128):
         input_shape = (maxlen, len(self.chars))
         model = Sequential()
         model.add(LSTM(hidden_units, input_shape=input_shape))
@@ -131,7 +131,7 @@ class assign2:
         model.compile(loss='categorical_crossentropy', optimizer=optimizer)
         return model
 
-    def build_cnn_v1(self, maxlen):
+    def build_cnn_v1(self, maxlen=40):
         input_shape_ = (maxlen, len(self.chars)) + (1,)
         model = Sequential()
         model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
@@ -273,7 +273,7 @@ class assign2:
         self.model = None
 
 
-# %% [markdown]
+# %% [markdown] id="spanish-temple"
 # ## Problem 1
 #
 # General steps:
@@ -284,28 +284,28 @@ class assign2:
 #
 # For example, here's what you do for Problem 1:
 
-# %%
+# %% id="unsigned-yield"
 obj = assign2()
 obj.model = obj.build_one_layer_lstm(maxlen=40)
-obj.main()
+obj.main(num_iter=3, freq=2, modeltype='cnn')
 obj.clear()
 
-# %% [markdown]
+# %% [markdown] id="answering-parade"
 # ## Problem 2
 #
 # (say you want to change the default temperature values)
 
-# %%
+# %% id="homeless-event"
 obj.model = obj.build_one_layer_lstm(maxlen=40)
 obj.main(temperature=[0.1, 0.2, 0.3, 0.4])
 obj.clear()
 
-# %% [markdown]
+# %% [markdown] id="nearby-dealer"
 # ## Problem 4
 #
 # Here's how you can configure your model outside the class (alternatively, you can define a new method inside the class):
 
-# %%
+# %% id="generous-assault"
 input_shape = (40, len(obj.chars))
 obj.model = Sequential()
 obj.model.add(LSTM(64, input_shape=input_shape))
@@ -321,3 +321,18 @@ obj.clear()
 obj.model = obj.build_one_layer_lstm(maxlen=40, hidden_units=64)
 obj.main()
 obj.clear()
+
+# %% [markdown] id="d4AP3DmyQ1xJ"
+# ## Problem 5 - CNN
+
+# %% id="y5QwH5ITQ1EK"
+obj = assign2()
+obj.model = obj.build_cnn_v1()
+obj.main(num_iter=3, freq=2, modeltype='cnn')
+
+# %% id="TNRrdtWkRNSZ"
+model_name = 'test_cnn'
+obj.model.save_weights(f'{model_name}.h5')
+obj.clear()
+
+# %% id="y1Gebd9OTtV2"
