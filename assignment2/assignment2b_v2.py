@@ -287,7 +287,7 @@ class assign2:
 # %% id="unsigned-yield"
 obj = assign2()
 obj.model = obj.build_one_layer_lstm(maxlen=40)
-obj.main(num_iter=3, freq=2, modeltype='cnn')
+obj.main(num_iter=3, freq=2, modeltype='lstm')
 obj.clear()
 
 # %% [markdown] id="answering-parade"
