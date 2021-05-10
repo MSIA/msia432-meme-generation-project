@@ -9,7 +9,7 @@ jupytext --to notebook assignment2b_v2.py
 After editing the notebook, you can use the following command to convert the notebook back to the .py file. 
 
 ```bash
-jupytext --to py:percent --opt comment_magics=false notebook.ipynb
+jupytext --to py:percent --opt comment_magics=false assignment2b_v2.ipynb
 ```
 
 You can see a full list of command in [here](https://jupytext.readthedocs.io/en/latest/using-cli.html).
