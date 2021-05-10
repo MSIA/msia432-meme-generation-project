@@ -107,7 +107,7 @@ class assign2:
         # break text into equal-length chunks
         char_chunks = [self.text[i: i + maxlen] for i in range(0, len(self.text) - maxlen, step)]
         next_char = [self.text[i + maxlen] for i in range(0, len(self.text) - maxlen, step)]
-        logger.debug('nb sequences:' + len(char_chunks)))
+        logger.debug(f'nb sequences: {len(char_chunks)}')
         
         return char_chunks, next_char
         
@@ -138,7 +138,7 @@ class assign2:
         elif modeltype == 'cnn':
             # Note that this is a simple CNN with 128, 256 and 512 hidden units. The receptive field is small.
             self.input_shape += (1,)
-            model.add(Conv2D(128, kernel_size=(2, len(chars)), activation='relu', input_shape=self.input_shape))
+            model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=self.input_shape))
             model.add(BatchNormalization())    
             model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
             model.add(BatchNormalization())
