@@ -1,12 +1,13 @@
 # ---
 # jupyter:
 #   jupytext:
+#     comment_magics: false
 #     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.9.1
+#       jupytext_version: 1.11.2
 #   kernelspec:
 #     display_name: msia432
 #     language: python
@@ -26,7 +27,6 @@ from typing import Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from tqdm.auto import tqdm
 from skimage.exposure import equalize_adapthist
 
 import tensorflow as tf
@@ -39,7 +39,7 @@ from tensorflow.keras.utils import get_file
 
 # %%
 try:
-    # %tensorflow_version only exists in Colab.
+    %tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
     IS_COLAB = True
 except Exception:
@@ -85,7 +85,7 @@ class assign2:
                  filepath='https://s3.amazonaws.com/text-datasets/nietzsche.txt'):
         
         # saving static variables in __init__
-        self.text = self.get_file(filename, filepath)
+        self.text = self.download_file(filename, filepath)
         self.chars = dict(sorted(Counter(self.text).items(), key=lambda x:x[1], reverse=True)).keys()
         self.char_indices = dict((c, i) for i, c in enumerate(self.chars))
         self.indices_char = dict((i, c) for i, c in enumerate(self.chars))
@@ -93,13 +93,12 @@ class assign2:
         # dyanmic variables - these are the variables that need to be changed via clear() after each modeling process
         self.charmap = None
         self.hmap = None
-        self.input_shape = None
         self.model = None
         
-    def get_file(self, filename, filepath):
+    def download_file(self, filename, filepath):
         path = get_file(filename, filepath)
         text = open(path).read().lower()
-        logger.debug('corpus length: ' + str(len(text)))
+        logger.debug(f'corpus length: {len(text)}')
         return text
         
     def tokenize(self, maxlen, step):
@@ -111,49 +110,54 @@ class assign2:
         
         return char_chunks, next_char
         
-    def vectorize(self, maxlen, step, modeltype):
+    def vectorize(self, maxlen, step):
         char_chunks, next_char = self.tokenize(maxlen, step)
         X = np.zeros((len(char_chunks), maxlen, len(self.chars)), dtype=np.bool)
         y = np.zeros((len(char_chunks), len(self.chars)), dtype=np.bool)
         for i, sentence in enumerate(char_chunks):
-            for t, char in enumerate(char_chunks):
+            for t, char in enumerate(sentence):
                 X[i, t, self.char_indices[char]] = 1
             y[i, self.char_indices[next_char[i]]] = 1
 
-        if modeltype == 'cnn':
-            return np.expand_dims(X, axis=3), y
-        else:
-            return X, y
-     
-    def example_model(self, maxlen, modeltype):
-       
-        #%% build the model: a single LSTM or CNN
-        print('Build model...')
-        self.input_shape = (maxlen, len(self.chars)) ## NEED TO CHANGE MAXLEN
+        return X, y
 
+    def build_one_layer_lstm(self, maxlen, hidden_units=128):
+        input_shape = (maxlen, len(self.chars))
         model = Sequential()
-        if modeltype == 'lstm':
-            # Note that this is a single-layer LSTM with 128 hidden units
-            model.add(LSTM(128, input_shape=self.input_shape))
-        elif modeltype == 'cnn':
-            # Note that this is a simple CNN with 128, 256 and 512 hidden units. The receptive field is small.
-            self.input_shape += (1,)
-            model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=self.input_shape))
-            model.add(BatchNormalization())    
-            model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
-            model.add(BatchNormalization())
-            model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))    
-            model.add(BatchNormalization())
-            model.add(Flatten())
+        model.add(LSTM(hidden_units, input_shape=input_shape))
         model.add(Dense(len(self.chars)))
         model.add(Activation('softmax'))
-
         optimizer = Adam(lr=0.001)
         model.compile(loss='categorical_crossentropy', optimizer=optimizer)
-        
         return model
+
+    def build_cnn_v1(self, maxlen):
+        input_shape_ = (maxlen, len(self.chars)) + (1,)
+        model = Sequential()
+        model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
+        model.add(BatchNormalization())
+        model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Flatten())
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+
+    # Load existing checkpoint
+    def load_checkpoint(self, modelname):
+        if os.path.exists(modelname):
+            logger.info('Try loading model: %s', modelname)
+        try:
+            self.model.load_weights(modelname)
+            logger.info('Loaded model: %s', modelname)
+        except Exception:
+            logger.error('Error in model, not loading...')
     
-    def generate_text(self, maxlen, temperature):
+    def generate_text(self, maxlen, input_shape, temperature):
         start_index = random.randint(0, len(self.text) - maxlen - 1)
         for diversity in temperature:
             print()
@@ -167,7 +171,7 @@ class assign2:
             sys.stdout.write(generated)
 
             for i in range(400):
-                x = np.zeros((1,) + self.input_shape)
+                x = np.zeros((1,) + input_shape)
 
                 for t, char in enumerate(sentence):
                     x[0, t, self.char_indices[char]] = 1.
@@ -196,10 +200,11 @@ class assign2:
             plt.imshow(equalize_adapthist(np.log(viz.T+1)), cmap='gray')
             plt.title('Visualization of one-hot characters')
             plt.grid(False)
-            plt.show(), plt.close()        
+            plt.show()
+            plt.close()        
         
     # used by generate_text
-    def sample(preds, temperature):
+    def sample(self, preds, temperature):
         """helper function to sample an index from a probability array"""
         # helper function to sample an index from a probability array
         preds = np.asarray(preds).astype('float64')
@@ -209,7 +214,7 @@ class assign2:
         return preds
 
     # used by generate_text
-    def viz_heatmap_chars(data, topk=5):
+    def viz_heatmap_chars(self, data, topk=5):
         """Helpers for visualization"""
         self.charmap = np.zeros((len(data), topk), dtype='str')
         self.hmap = np.zeros((len(data), topk))
@@ -222,48 +227,49 @@ class assign2:
         sns.heatmap(self.hmap.T, annot=self.charmap.T, fmt='', cmap='Wistia')
         plt.title('Character heatmap')
         
-    def main(self, save_weights=True, load_weights=False, iteration=600, batch_size=128, epochs=1,
-            maxlen=40, step=1, checkpoint_freq=5, modeltype='lstm', temperature=[0.2, 0.5, 1.0, 1.2]):
+    def main(self, num_iter: int=600, freq: int=5, modeltype: str='lstm',
+             save_weights: bool=True, load_weights: bool=False, batch_size: int=128,
+             epochs: int=1, maxlen: int=40, step: int=1, temperature: list=[0.2, 0.5, 1.0, 1.2]):
         
-        modelname = 'model-text-' + modeltype + '.h5'
+        modelname = 'textgen-figures/' + 'model-text-' + modeltype + '.h5'
         
         # step 1: preprocess
-        X, y = self.vectorize(maxlen, step, modeltype)
+        X, y = self.vectorize(maxlen, step)
+        if modeltype == 'cnn':
+            X = np.expand_dims(X, axis=3)
         
         # optional step: load weights
-        if load_weights == True:
-            if os.path.exists(modelname): 
-                print('Loading model:' + modelname)
-                try: self.model.load_weights(modelname)
-                except: logger.error('Error in model, not loading...')
+        if load_weights:
+            self.load_checkpoint(modelname)
                 
         # step 2: train the model, output generated text after each iteration
         tm = time.time()
         losses = []
-        for i in range(1, iteration + 1):
+        for iteration in range(1, num_iter + 1):
             print()
             print('-' * 50)
-            print('Iteration', i)
+            print('Iteration', iteration)
 
-            loss = self.model.fit(X, y, batch_size, epochs)
-            losses.append(loss.history['loss'])
+            history = self.model.fit(X, y, batch_size, epochs)
+            losses.append(history.history['loss'])
 
-            print("Total training time: %0.2f min, epoch %d" % ((time.time() - tm)/60.0, i))
-            print("Average time per epoch: %0.2f s" % ((time.time() - tm)/i))
+            print("Total training time: %0.2f min, epoch %d" % ((time.time() - tm)/60.0, iteration))
+            print("Average time per epoch: %0.2f s" % ((time.time() - tm)/iteration))
 
-            if i % checkpoint_freq == 0: 
-                if save_weights == True:
+            if iteration % freq == 0:
+                if save_weights:
                     self.model.save_weights(modelname)
-                self.generate_text(maxlen, temperature)
+                input_shape = self.model.layers[0].input_shape[1:]
+                self.generate_text(maxlen, input_shape, temperature)
                 plt.plot(losses)
                 plt.yscale('log')
                 plt.title('Loss')
-                plt.show(), plt.close()
+                plt.show()
+                plt.close()
                 
     def clear(self):
         self.charmap = None
         self.hmap = None
-        self.input_shape = None
         self.model = None
 
 
@@ -280,7 +286,7 @@ class assign2:
 
 # %%
 obj = assign2()
-obj.model = obj.example_model(maxlen=40, modeltype='lstm')
+obj.model = obj.build_one_layer_lstm(maxlen=40)
 obj.main()
 obj.clear()
 
@@ -290,23 +296,28 @@ obj.clear()
 # (say you want to change the default temperature values)
 
 # %%
-obj.model = obj.example_model(maxlen=40, modeltype='lstm')
+obj.model = obj.build_one_layer_lstm(maxlen=40)
 obj.main(temperature=[0.1, 0.2, 0.3, 0.4])
 obj.clear()
 
 # %% [markdown]
 # ## Problem 4
 #
-# Here's how you can configure your model outside the class:
+# Here's how you can configure your model outside the class (alternatively, you can define a new method inside the class):
 
 # %%
-obj.input_shape = (40, len(obj.chars))
+input_shape = (40, len(obj.chars))
 obj.model = Sequential()
-obj.model.add(LSTM(64, input_shape=obj.input_shape))
-obj.model.add(Dense(len(self.chars)))
+obj.model.add(LSTM(64, input_shape=input_shape))
+obj.model.add(Dense(len(obj.chars)))
 obj.model.add(Activation('softmax'))
 optimizer = Adam(lr=0.001)
 obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
+obj.main()
+obj.clear()
+
+# this is equivalent to the following:
+obj.model = obj.build_one_layer_lstm(maxlen=40, hidden_units=64)
 obj.main()
 obj.clear()
