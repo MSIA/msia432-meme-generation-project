@@ -322,6 +322,21 @@ obj.model = obj.build_one_layer_lstm(maxlen=40, hidden_units=64)
 obj.main()
 obj.clear()
 
+# %% [markdown] id="8sMAunVLVoDe"
+# This is just to demonstrate another way to write model with `keras.model.Sequential`. Personally, I think this method allows us to write the model code more concise.
+
+# %% colab={"base_uri": "https://localhost:8080/"} id="TckdAyd8UwR3" outputId="31d59265-6ac9-48c1-e402-d0226d59c6f4"
+input_shape = (40, len(obj.chars))
+obj.model = Sequential([
+    LSTM(64, input_shape=input_shape),
+    Dense(len(obj.chars), activation='softmax')
+    ])
+optimizer = Adam(lr=0.001)
+obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+
+obj.main(num_iter=1, modeltype='lstm')
+obj.clear()
+
 # %% [markdown] id="d4AP3DmyQ1xJ"
 # ## Problem 5 - CNN
 
