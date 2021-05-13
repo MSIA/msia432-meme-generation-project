@@ -13,10 +13,10 @@
 #     name: python3
 # ---
 
-# %% [markdown] id="empirical-grain"
+# %% [markdown] id="proof-compromise"
 # # Assignment2b - V.2
 
-# %% id="invalid-pathology"
+# %% id="terminal-glossary"
 import os
 import sys, time, random, gc, socket
 import logging
@@ -36,7 +36,7 @@ from tensorflow.keras.layers import LSTM, Conv2D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import get_file
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="demographic-costa" outputId="a4d38e41-fb50-44af-c0c4-89717f70fa95"
+# %% colab={"base_uri": "https://localhost:8080/"} id="posted-charm" outputId="366730ae-d74d-4823-bf97-94b14571d5f2"
 try:
     # tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
@@ -53,7 +53,7 @@ if not tf.config.list_physical_devices('GPU'):
 else:
   print('NUM GPUS:', len(tf.config.list_physical_devices('GPU')))
 
-# %% id="induced-weight"
+# %% id="agreed-grill"
 logger = logging.getLogger('my_happy_logger')
 logger.setLevel(logging.DEBUG)
 
@@ -64,21 +64,21 @@ stream_handler.setFormatter(formatter)
 
 logger.addHandler(stream_handler)
 
-# %% id="valid-bailey"
+# %% id="played-grill"
 # GPU memory fix + Mac workaround
 if not IS_COLAB:
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
-# %% id="assisted-princeton"
+# %% id="compound-worthy"
 os.makedirs('textgen-figures', exist_ok=True)
 
-# %% id="significant-sequence"
+# %% id="protecting-barrel"
 np.random.seed(42)
 tf.random.set_seed(42)
 
 
-# %% id="manual-record"
+# %% id="abroad-engineering"
 class assign2:
     
     def __init__(self, filename='nietzsche.txt', 
@@ -258,9 +258,15 @@ class assign2:
             print("Total training time: %0.2f min, epoch %d" % ((time.time() - tm)/60.0, iteration))
             print("Average time per epoch: %0.2f s" % ((time.time() - tm)/iteration))
 
-            if iteration % freq == 0:
+            if iteration % freq == 0 and iteration < num_iter:
                 if save_weights:
                     self.model.save_weights(modelname)
+                input_shape = self.model.layers[0].input_shape[1:]
+                self.generate_text(maxlen, input_shape, temperature)
+            
+            if iteration == num_iter:
+                if save_weights:
+                    self.model.save_weights(modelname, overwrite=True)
                 input_shape = self.model.layers[0].input_shape[1:]
                 self.generate_text(maxlen, input_shape, temperature)
                 plt.plot(losses)
@@ -275,7 +281,7 @@ class assign2:
         self.model = None
 
 
-# %% [markdown] id="spanish-temple"
+# %% [markdown] id="declared-algeria"
 # ## Problem 1
 #
 # General steps:
@@ -286,70 +292,86 @@ class assign2:
 #
 # For example, here's what you do for Problem 1:
 
-# %% id="unsigned-yield"
-obj = assign2()
-obj.model = obj.build_one_layer_lstm(maxlen=40)
-obj.main(num_iter=1, freq=1, modeltype='lstm', modelname='haha.h5')
-obj.clear()
+# %% id="massive-favor"
+# obj = assign2()
+# obj.model = obj.build_one_layer_lstm(maxlen=40)
+# obj.main(num_iter=1, freq=1, modeltype='lstm', modelname='haha.h5')
+# obj.clear()
 
-# %% [markdown] id="answering-parade"
+# %% [markdown] id="norwegian-values"
 # ## Problem 2
 #
 # (say you want to change the default temperature values)
 
-# %% id="homeless-event"
-obj.model = obj.build_one_layer_lstm(maxlen=40)
-obj.main(temperature=[0.1, 0.2, 0.3, 0.4])
-obj.clear()
+# %% id="ranking-costs"
+# obj.model = obj.build_one_layer_lstm(maxlen=40)
+# obj.main(temperature=[0.1, 0.2, 0.3, 0.4])
+# obj.clear()
 
-# %% [markdown] id="nearby-dealer"
+# %% [markdown] id="U_HruLDn_OUI"
+# ## Problem 3
+
+# %% colab={"base_uri": "https://localhost:8080/"} id="uOhjyCuS_M62" outputId="eb82106d-4e79-4e80-da85-5819aa64abca"
+obj_q3_2 = assign2()
+obj_q3_2.model = obj_q3_2.build_one_layer_lstm(hidden_units=256)
+
+# %% colab={"base_uri": "https://localhost:8080/"} id="0bvUND9y_0gB" outputId="0ea05d7b-c204-491d-cd6d-ae834dbbc2ed"
+obj_q3_2.model.summary()
+
+# %% colab={"base_uri": "https://localhost:8080/", "height": 1000} id="jxjOyzAC_zvt" outputId="b71c9fce-48ce-40a0-c4ad-1f05b40bdc7b"
+obj_q3_2.main(num_iter=25, freq=10, modeltype='lstm', modelname='q3_2_iter25.h5')
+
+# %% id="wiSvQIIsASCC"
+obj_q3_2.clear()
+
+# %% [markdown] id="bored-mountain"
 # ## Problem 4
 #
 # Here's how you can configure your model outside the class (alternatively, you can define a new method inside the class):
 
-# %% id="generous-assault"
-input_shape = (40, len(obj.chars))
-obj.model = Sequential()
-obj.model.add(LSTM(64, input_shape=input_shape))
-obj.model.add(Dense(len(obj.chars)))
-obj.model.add(Activation('softmax'))
-optimizer = Adam(lr=0.001)
-obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+# %% id="architectural-acoustic"
+# input_shape = (40, len(obj.chars))
+# obj.model = Sequential()
+# obj.model.add(LSTM(64, input_shape=input_shape))
+# obj.model.add(Dense(len(obj.chars)))
+# obj.model.add(Activation('softmax'))
+# optimizer = Adam(lr=0.001)
+# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-obj.main()
-obj.clear()
+# obj.main()
+# obj.clear()
 
-# this is equivalent to the following:
-obj.model = obj.build_one_layer_lstm(maxlen=40, hidden_units=64)
-obj.main()
-obj.clear()
+# # this is equivalent to the following:
+# obj.model = obj.build_one_layer_lstm(maxlen=40, hidden_units=64)
+# obj.main()
+# obj.clear()
 
-# %% [markdown] id="8sMAunVLVoDe"
+# %% [markdown] id="dress-leather"
 # This is just to demonstrate another way to write model with `keras.model.Sequential`. Personally, I think this method allows us to write the model code more concise.
 
-# %% id="TckdAyd8UwR3"
-input_shape = (40, len(obj.chars))
-obj.model = Sequential([
-    LSTM(64, input_shape=input_shape),
-    Dense(len(obj.chars), activation='softmax')
-    ])
-optimizer = Adam(lr=0.001)
-obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+# %% id="posted-diary"
+# input_shape = (40, len(obj.chars))
+# obj.model = Sequential([
+#     LSTM(64, input_shape=input_shape),
+#     Dense(len(obj.chars), activation='softmax')
+#     ])
+# optimizer = Adam(lr=0.001)
+# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-obj.main(num_iter=1, modeltype='lstm')
-obj.clear()
+# obj.main(num_iter=1, modeltype='lstm')
+# obj.clear()
 
-# %% [markdown] id="d4AP3DmyQ1xJ"
+# %% [markdown] id="beginning-applicant"
 # ## Problem 5 - CNN
 
-# %% id="y5QwH5ITQ1EK"
-obj = assign2()
-obj.model = obj.build_cnn_v1()
-obj.main(num_iter=3, freq=2, modeltype='cnn')
+# %% id="basic-beatles"
+# obj = assign2()
+# obj.model = obj.build_cnn_v1()
+# obj.main(num_iter=3, freq=2, modeltype='cnn')
 
-# %% id="TNRrdtWkRNSZ"
-model_name = 'test_cnn'
-obj.model.save_weights(f'{model_name}.h5')
-obj.clear()
+# %% id="systematic-addition"
+# model_name = 'test_cnn'
+# obj.model.save_weights(f'{model_name}.h5')
+# obj.clear()
 
-# %% id="y1Gebd9OTtV2"
+# %% id="living-farmer"
