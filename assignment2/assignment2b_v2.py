@@ -32,11 +32,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten, BatchNormalization
-from tensorflow.keras.layers import LSTM, Conv2D
+from tensorflow.keras.layers import LSTM, Conv2D, Bidirectional, GRU
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import get_file
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="posted-charm" outputId="366730ae-d74d-4823-bf97-94b14571d5f2"
+# %% colab={"base_uri": "https://localhost:8080/"} id="posted-charm" outputId="1e5b0d5a-4624-49d1-c21f-dd230db7e157"
 try:
     # tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
@@ -280,7 +280,6 @@ class assign2:
         self.hmap = None
         self.model = None
 
-
 # %% [markdown] id="declared-algeria"
 # ## Problem 1
 #
@@ -311,18 +310,18 @@ class assign2:
 # %% [markdown] id="U_HruLDn_OUI"
 # ## Problem 3
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="uOhjyCuS_M62" outputId="eb82106d-4e79-4e80-da85-5819aa64abca"
-obj_q3_2 = assign2()
-obj_q3_2.model = obj_q3_2.build_one_layer_lstm(hidden_units=256)
+# %% id="uOhjyCuS_M62"
+# obj_q3_2 = assign2()
+# obj_q3_2.model = obj_q3_2.build_one_layer_lstm(hidden_units=256)
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="0bvUND9y_0gB" outputId="0ea05d7b-c204-491d-cd6d-ae834dbbc2ed"
-obj_q3_2.model.summary()
+# %% id="0bvUND9y_0gB"
+# obj_q3_2.model.summary()
 
-# %% colab={"base_uri": "https://localhost:8080/", "height": 1000} id="jxjOyzAC_zvt" outputId="b71c9fce-48ce-40a0-c4ad-1f05b40bdc7b"
-obj_q3_2.main(num_iter=25, freq=10, modeltype='lstm', modelname='q3_2_iter25.h5')
+# %% id="jxjOyzAC_zvt"
+# obj_q3_2.main(num_iter=25, freq=10, modeltype='lstm', modelname='q3_2_iter25.h5')
 
 # %% id="wiSvQIIsASCC"
-obj_q3_2.clear()
+# obj_q3_2.clear()
 
 # %% [markdown] id="bored-mountain"
 # ## Problem 4
@@ -346,20 +345,30 @@ obj_q3_2.clear()
 # obj.main()
 # obj.clear()
 
-# %% [markdown] id="dress-leather"
-# This is just to demonstrate another way to write model with `keras.model.Sequential`. Personally, I think this method allows us to write the model code more concise.
+# %% [markdown] id="THBtk8f0HVG8"
+# ### Mix 1
 
 # %% id="posted-diary"
-# input_shape = (40, len(obj.chars))
-# obj.model = Sequential([
-#     LSTM(64, input_shape=input_shape),
-#     Dense(len(obj.chars), activation='softmax')
+# obj_q4_1 = assign2()
+# input_shape = (40, len(obj_q4_1.chars))
+
+# %% id="zWgIkmyWHx8f"
+# obj_q4_1.model = Sequential([
+#     Bidirectional(LSTM(64, return_sequences=True, dropout=0.1, recurrent_dropout=0), 
+#                   input_shape=input_shape),
+#     BatchNormalization(),
+#     Bidirectional(GRU(32, dropout=0.01, recurrent_dropout=0)),
+#     BatchNormalization(),
+#     Dense(len(obj_q4_1.chars), activation='softmax')
 #     ])
 # optimizer = Adam(lr=0.001)
-# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+# obj_q4_1.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-# obj.main(num_iter=1, modeltype='lstm')
-# obj.clear()
+# %% id="JwNacZXpHyau"
+# obj_q4_1.main(num_iter=25, freq=10, modeltype='lstm')
+
+# %% id="Y9iuvl4bOTDD"
+# obj_q4_1.clear()
 
 # %% [markdown] id="beginning-applicant"
 # ## Problem 5 - CNN
