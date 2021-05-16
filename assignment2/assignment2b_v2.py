@@ -9,8 +9,8 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.9.1
 #   kernelspec:
-#     display_name: Python 3
-#     name: python3
+#     display_name: 'Python 3.7.9 64-bit (''base'': conda)'
+#     name: python379jvsc74a57bd0718bf85f3541632ea84dad26eb3650b79d1ee7e1ee55997bfbe797dc2dd7c243
 # ---
 
 # %% [markdown] id="proof-compromise"
@@ -130,7 +130,19 @@ class assign2:
         optimizer = Adam(lr=0.001)
         model.compile(loss='categorical_crossentropy', optimizer=optimizer)
         return model
-
+    
+    def build_two_layer_lstm(self, maxlen=40, hidden_units=128):
+        # Added by Christina
+        input_shape = (maxlen, len(self.chars))
+        model = Sequential()
+        model.add(LSTM(hidden_units, input_shape=input_shape, return_sequences=True))
+        model.add(LSTM(hidden_units))
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+    
     def build_cnn_v1(self, maxlen=40):
         input_shape_ = (maxlen, len(self.chars)) + (1,)
         model = Sequential()
@@ -139,6 +151,40 @@ class assign2:
         model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
         model.add(BatchNormalization())
         model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Flatten())
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+
+    def build_cnn_v2(self, maxlen=40):
+        # Added by Christina, less filtering
+        input_shape_ = (maxlen, len(self.chars)) + (1,)
+        model = Sequential()
+        model.add(Conv2D(64, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
+        model.add(BatchNormalization())
+        model.add(Conv2D(128, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Flatten())
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+
+    def build_cnn_v3(self, maxlen=40):
+        # Added by Christina, more filtering
+        input_shape_ = (maxlen, len(self.chars)) + (1,)
+        model = Sequential()
+        model.add(Conv2D(256, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
+        model.add(BatchNormalization())
+        model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Conv2D(1024, kernel_size=(5, 1), activation='relu'))
         model.add(BatchNormalization())
         model.add(Flatten())
         model.add(Dense(len(self.chars)))
@@ -310,6 +356,12 @@ class assign2:
 # %% [markdown] id="U_HruLDn_OUI"
 # ## Problem 3
 
+# %% [markdown]
+# ### Modification 1
+
+# %% [markdown]
+# ### Modification 2
+
 # %% id="uOhjyCuS_M62"
 # obj_q3_2 = assign2()
 # obj_q3_2.model = obj_q3_2.build_one_layer_lstm(hidden_units=256)
@@ -322,6 +374,49 @@ class assign2:
 
 # %% id="wiSvQIIsASCC"
 # obj_q3_2.clear()
+
+# %% [markdown]
+# ### Modification 3
+
+# %% [markdown]
+# ### Modification 4
+
+# %%
+# obj = assign2()
+# obj.model = obj.build_two_layer_lstm(maxlen=40, hidden_units=128)
+# obj.main(num_iter=25, freq=2, modeltype='lstm')
+# model_name = 'lstm_4'
+# obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
+# obj.clear()
+
+# %% [markdown]
+# ### Modification 5
+
+# %%
+# obj = assign2()
+# input_shape = (40, len(obj.chars))
+# obj.model = Sequential()
+# obj.model.add(LSTM(64, input_shape=input_shape))
+# obj.model.add(Dense(len(obj.chars)))
+# obj.model.add(Activation('softmax'))
+# optimizer = Adam(lr=0.001)
+# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+
+# obj.main(num_iter = 10, freq = 5, modeltype = 'lstm')
+# obj.clear()
+
+# %%
+# obj = assign2()
+# input_shape = (40, len(obj.chars))
+# obj.model = Sequential()
+# obj.model.add(GRU(64, input_shape=input_shape))
+# obj.model.add(Dense(len(obj.chars)))
+# obj.model.add(Activation('softmax'))
+# optimizer = Adam(lr=0.001)
+# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+
+# obj.main(num_iter = 10, freq = 5, modeltype = 'gru')
+# obj.clear()
 
 # %% [markdown] id="bored-mountain"
 # ## Problem 4
@@ -383,4 +478,65 @@ class assign2:
 # obj.model.save_weights(f'{model_name}.h5')
 # obj.clear()
 
+# %% [markdown]
+# ### Part B
+
 # %% id="living-farmer"
+# obj = assign2()
+# obj.model = obj.build_cnn_v2()
+# obj.main(num_iter=25, freq=2, modeltype='cnn')
+# model_name = 'cnn_b_less'
+# obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
+# obj.clear()
+
+# %%
+# obj = assign2()
+# obj.model = obj.build_cnn_v3()
+# obj.main(num_iter=25, freq=2, modeltype='cnn')
+# model_name = 'cnn_b_more'
+# obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
+# obj.clear()
+
+# %% [markdown]
+# ### Part C
+
+# %%
+# filter_size_collection = []
+# filter_number_collection = []
+# loss_collection = []
+# time_collection = []
+
+# for filter_size in [7,9,11]:
+#     for filter_number in [64, 128, 256]:
+#         obj = assign2()
+#         obj.model = obj.build_cnn_v1(maxlen = 40, filter_size = filter_size, filter_number = filter_number)
+#         obj.main(num_iter = 30, freq = 30, modeltype = 'cnn')
+#         filter_size_collection.append(filter_size)
+#         filter_number_collection.append(filter_number)
+#         loss_collection.append(obj.final_loss)
+#         time_collection.append(obj.total_time)
+#         obj.clear()
+
+# %% [markdown]
+# Then we want to test if adding another layer makes significant difference
+
+# %%
+
+# filter_size_collection = []
+# filter_number_collection = []
+# loss_collection = []
+# time_collection = []
+
+# for filter_size in [7, 9]:
+#     for filter_number in [32, 64, 128]:
+#         obj = assign2()
+#         obj.model = obj.build_cnn_v2(maxlen = 40, filter_size = filter_size, filter_number = filter_number)
+#         obj.main(num_iter = 30, freq = 40, modeltype = 'cnn')
+#         filter_size_collection.append(filter_size)
+#         filter_number_collection.append(filter_number)
+#         loss_collection.append(obj.final_loss)
+#         time_collection.append(obj.total_time)
+#         obj.clear()
+
+# %% [markdown]
+# From all the results above, cnn1 with original layer, filter size of 7 and filter number of 256 provides the best result of losses after 30 iterations.
