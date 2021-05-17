@@ -7,17 +7,16 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.9.1
 #   kernelspec:
-#     display_name: msia432
-#     language: python
-#     name: msia432
+#     display_name: Python 3
+#     name: python3
 # ---
 
-# %% [markdown] id="proof-compromise"
+# %% [markdown] id="australian-jacob"
 # # Assignment2b - V.2
 
-# %% id="terminal-glossary"
+# %% id="closing-boating"
 import os
 import sys, time, random, gc, socket
 import logging
@@ -37,7 +36,7 @@ from tensorflow.keras.layers import LSTM, Conv2D, Bidirectional, GRU
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import get_file
 
-# %% colab={"base_uri": "https://localhost:8080/"} id="posted-charm" outputId="1e5b0d5a-4624-49d1-c21f-dd230db7e157"
+# %% id="sticky-examination" colab={"base_uri": "https://localhost:8080/"} outputId="bf603251-3e38-4d1e-8949-703c0db5917e"
 try:
     # tensorflow_version only exists in Colab.
     %tensorflow_version 2.x
@@ -54,7 +53,7 @@ if not tf.config.list_physical_devices('GPU'):
 else:
   print('NUM GPUS:', len(tf.config.list_physical_devices('GPU')))
 
-# %% id="agreed-grill"
+# %% id="compressed-settlement"
 logger = logging.getLogger('my_happy_logger')
 logger.setLevel(logging.DEBUG)
 
@@ -65,21 +64,21 @@ stream_handler.setFormatter(formatter)
 
 logger.addHandler(stream_handler)
 
-# %% id="played-grill"
+# %% id="great-while"
 # GPU memory fix + Mac workaround
 if not IS_COLAB:
     os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
-# %% id="compound-worthy"
+# %% id="every-stamp"
 os.makedirs('textgen-figures', exist_ok=True)
 
-# %% id="protecting-barrel"
+# %% id="frank-criterion"
 np.random.seed(42)
 tf.random.set_seed(42)
 
 
-# %% id="abroad-engineering"
+# %% id="ignored-thursday"
 class assign2:
     
     def __init__(self, filename='nietzsche.txt', 
@@ -362,10 +361,14 @@ class assign2:
         self.model = None
 
 
-# %% [markdown] id="declared-algeria"
+# %% colab={"base_uri": "https://localhost:8080/"} id="3QAWO3d_OUqb" outputId="c5ad293a-1fc7-473b-f58e-37e7b8031727"
+obj = assign2()
+
+# %% [markdown] id="instructional-richards"
 # ## Problem 1
 #
 # General steps:
+#
 # 1) Instantiate class once (unless you want to change the dataset) \
 # 2) configure the model and input shape (either use example model with different parameters, or define a custom model via obj.model = Sequential(), etc.) \
 # 3) call the main method with the right arguments \
@@ -373,73 +376,77 @@ class assign2:
 #
 # For example, here's what you do for Problem 1:
 
-# %% id="massive-favor"
+# %% id="premium-parent"
 # obj = assign2()
 # obj.model = obj.build_one_layer_lstm(maxlen=40)
 # obj.main(num_iter=1, freq=1, modeltype='lstm', modelname='haha.h5')
 # obj.clear()
 
-# %% [markdown] id="norwegian-values"
+# %% [markdown] id="broad-discount"
 # ## Problem 2
 #
 # (say you want to change the default temperature values)
 
-# %% id="ranking-costs"
+# %% id="I3mptO77M9jL"
+# obj.model = obj.build_one_layer_lstm(maxlen=80)
+# obj.main(maxlen=80, num_iter=25, freq=1, modeltype='lstm', modelname='lstm_maxlen.h5', temperature=[0.3, 2])
+# obj.clear()
+
+# %% id="czech-organic"
 # obj.model = obj.build_one_layer_lstm(maxlen=80)
 # obj.main(maxlen=80, num_iter=25, freq=25, modeltype='lstm', modelname='lstm_maxlen.h5')
 # obj.clear()
 
-# %% [markdown] id="U_HruLDn_OUI"
+# %% [markdown] id="sticky-wales"
 # ## Problem 3
 
-# %% [markdown]
+# %% [markdown] id="figured-bradford"
 # ### Modification 1
 
-# %%
+# %% id="recorded-nickname"
 # obj.model = obj.build_one_layer_lstm(hidden_units=64)
 # obj.main(num_iter=25, freq=25, modelname='q3_1.h5')
 # obj.clear()
 
-# %% [markdown]
+# %% [markdown] id="academic-session"
 # ### Modification 2
 
-# %% id="uOhjyCuS_M62"
+# %% id="insured-subscriber"
 # obj.model = obj.build_one_layer_lstm(hidden_units=256)
-# obj.model.summary()
 # obj.main(num_iter=25, freq=10, modeltype='lstm', modelname='q3_2_iter25.h5')
 # obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="level-shirt"
 # ### Modification 3
 
-# %%
+# %% id="adolescent-breakdown"
 # obj.model = obj.build_one_layer_lstm(dropout=0.2)
 # obj.main(num_iter=25, freq=25, modelname='q3_3_1.h5')
 # obj.clear()
 
-# %%
+# %% id="known-captain"
 # obj.model = obj.build_one_layer_lstm(dropout=0.6)
 # obj.main(num_iter=25, freq=25, modelname='q3_3_2.h5')
 # obj.clear()
 
-# %% pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} id="incident-classroom"
 # obj.model = obj.build_one_layer_lstm(dropout=0.2, recurrent_dropout=0.1)
 # obj.main(num_iter=25, freq=25, modelname='q3_3_3.h5')
 # obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="heavy-variation"
 # ### Modification 4
 
-# %%
+# %% id="awful-personal"
 # obj.model = obj.build_two_layer_lstm(maxlen=40, hidden_units=128)
 # model_name = '/content/drive/MyDrive/Colab Notebooks/432/lstm_4.h5'
 # obj.main(num_iter=25, freq=2, modeltype='lstm', modelname=model_name)
 # obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="marked-reproduction"
 # ### Modification 5
 
-# %% pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} id="efficient-nelson"
 # input_shape = (40, len(obj.chars))
 # obj.model = Sequential([
     # LSTM(64, input_shape=input_shape),
@@ -452,8 +459,7 @@ class assign2:
 # obj.main(num_iter = 10, freq = 5, modeltype = 'lstm')
 # obj.clear()
 
-# %%
-# obj = assign2()
+# %% id="middle-illness"
 # input_shape = (40, len(obj.chars))
 # obj.model = Sequential([
     # GRU(64, input_shape=input_shape),
@@ -466,12 +472,12 @@ class assign2:
 # obj.main(num_iter = 25, freq = 5, modeltype = 'gru')
 # obj.clear()
 
-# %% [markdown] id="bored-mountain"
+# %% [markdown] id="proved-reverse"
 # ## Problem 4
 #
 # Here's how you can configure your model outside the class (alternatively, you can define a new method inside the class):
 
-# %% id="architectural-acoustic"
+# %% id="dynamic-buying"
 # input_shape = (40, len(obj.chars))
 # obj.model = Sequential()
 # obj.model.add(LSTM(64, input_shape=input_shape))
@@ -488,10 +494,10 @@ class assign2:
 # obj.main()
 # obj.clear()
 
-# %% [markdown] id="THBtk8f0HVG8" pycharm={"name": "#%% md\n"}
+# %% [markdown] id="instant-liabilities" pycharm={"name": "#%% md\n"}
 # ### Mix 1
 
-# %% id="zWgIkmyWHx8f" pycharm={"name": "#%%\n"}
+# %% id="least-paragraph" pycharm={"name": "#%%\n"}
 # input_shape = (40, len(obj.chars))
 # obj.model = Sequential([
 #     Bidirectional(LSTM(64, return_sequences=True, dropout=0.1, recurrent_dropout=0), 
@@ -505,81 +511,81 @@ class assign2:
 # obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
 # obj.main(num_iter=25, freq=10, modeltype='lstm')
-obj.clear()
+# obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="previous-liquid"
 # ### Mix 2
 
-# %% pycharm={"name": "#%%\n"}
-input_shape = (80, len(obj.chars))
-obj.model = Sequential([
-   Bidirectional(LSTM(256, return_sequences=True, dropout=0.2, recurrent_dropout=0),
-                 input_shape=input_shape),
-   BatchNormalization(),
-   Bidirectional(GRU(64, dropout=0.1, recurrent_dropout=0)),
-   BatchNormalization(),
-   Dense(57, activation='softmax')
-])
-optimizer = Adam(lr=0.001)
-obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+# %% pycharm={"name": "#%%\n"} id="harmful-processing"
+# input_shape = (80, len(obj.chars))
+# obj.model = Sequential([
+#    Bidirectional(LSTM(256, return_sequences=True, dropout=0.2, recurrent_dropout=0),
+#                  input_shape=input_shape),
+#    BatchNormalization(),
+#    Bidirectional(GRU(64, dropout=0.1, recurrent_dropout=0)),
+#    BatchNormalization(),
+#    Dense(57, activation='softmax')
+# ])
+# optimizer = Adam(lr=0.001)
+# obj.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-obj.main(maxlen=80, num_iter=25, freq=25, modelname='q3_3_3.h5')
-obj.clear()
+# obj.main(maxlen=80, num_iter=25, freq=25, modelname='q3_3_3.h5')
+# obj.clear()
 
-# %% [markdown] id="beginning-applicant" pycharm={"name": "#%% md\n"}
+# %% [markdown] id="radio-experience" pycharm={"name": "#%% md\n"}
 # ## Problem 5 - CNN
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="advised-voluntary"
 # ### Part A
 
-# %%
+# %% id="apart-singles"
 # obj.model = obj.build_cnn_v1(filter_size=7)
 # obj.main(num_iter=25, modelname= "CNN_filter_7",modeltype='cnn')
 # obj.clear()
 
-# %%
+# %% id="disturbed-slide"
 # obj.model = obj.build_cnn_v1(filter_size=3)
 # obj.main(num_iter=25, modelname= "CNN_filter_3",modeltype='cnn')
 # obj.clear()
 
 
-# %% pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} id="tight-administrator"
 # obj.model = obj.build_cnn_v1(filter_size=5)
 # obj.main(num_iter=25, modelname= "CNN_filter_5",modeltype='cnn')
 # obj.clear()
 
-# %% [markdown]
+# %% [markdown] id="authentic-confidentiality"
 # ### Part B
 
-# %% id="living-farmer"
+# %% id="starting-server"
 # obj.model = obj.build_cnn_v2()
 # model_name = '/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5'
 # obj.main(num_iter=25, freq=2, modeltype='cnn', modelname=model_name)
 # obj.clear()
 
-# %%
+# %% id="going-maryland"
 # obj.model = obj.build_cnn_v3()
 # model_name = '/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5'
 # obj.main(num_iter=25, freq=2, modeltype='cnn', modelname=model_name)
 # obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="outer-mortality"
 # ### Part C
 
-# %% pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} id="legendary-rover"
 # obj.model = obj.build_cnn_v4()
 # obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_no_last_layer.h5')
 # obj.clear()
 
-# %%
+# %% id="rapid-dream"
 # obj.model = obj.build_cnn_v5()
 # obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_add_first_layer.h5')
 # obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="touched-boring"
 # ### Part D
 
-# %% pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} id="wireless-consumer"
 # filter_size_collection = []
 # filter_number_collection = []
 # loss_collection = []
@@ -595,10 +601,10 @@ obj.clear()
 #         time_collection.append(obj.total_time)
 #         obj.clear()
 
-# %% [markdown] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} id="seventh-cathedral"
 # Then we want to test if adding another layer makes significant difference
 
-# %%
+# %% id="acceptable-tiger"
 # filter_size_collection = []
 # filter_number_collection = []
 # loss_collection = []
