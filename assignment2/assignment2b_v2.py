@@ -7,10 +7,11 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.9.1
+#       jupytext_version: 1.11.2
 #   kernelspec:
-#     display_name: 'Python 3.7.9 64-bit (''base'': conda)'
-#     name: python379jvsc74a57bd0718bf85f3541632ea84dad26eb3650b79d1ee7e1ee55997bfbe797dc2dd7c243
+#     display_name: msia432
+#     language: python
+#     name: msia432
 # ---
 
 # %% [markdown] id="proof-compromise"
@@ -121,10 +122,10 @@ class assign2:
 
         return X, y
 
-    def build_one_layer_lstm(self, maxlen=40, hidden_units=128):
+    def build_one_layer_lstm(self, maxlen=40, hidden_units=128, dropout=0, recurrent_dropout=0):
         input_shape = (maxlen, len(self.chars))
         model = Sequential()
-        model.add(LSTM(hidden_units, input_shape=input_shape))
+        model.add(LSTM(hidden_units, input_shape=input_shape, dropout=dropout, recurrent_dropout=recurrent_dropout))
         model.add(Dense(len(self.chars)))
         model.add(Activation('softmax'))
         optimizer = Adam(lr=0.001)
@@ -185,6 +186,40 @@ class assign2:
         model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
         model.add(BatchNormalization())
         model.add(Conv2D(1024, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Flatten())
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+    
+    def build_cnn_v4(self, maxlen=40):
+        # Added by Qiana, take out a layer
+        input_shape_ = (40, len(self.chars)) + (1,)
+        model = Sequential()
+        model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
+        model.add(BatchNormalization())
+        model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Flatten())
+        model.add(Dense(len(self.chars)))
+        model.add(Activation('softmax'))
+        optimizer = Adam(lr=0.001)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        return model
+    
+    def build_cnn_v5(self, maxlen=40):
+        # Added by Qiana, add a layer
+        input_shape_ = (40, len(self.chars)) + (1,)
+        model = Sequential()
+        model.add(Conv2D(64, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
+        model.add(BatchNormalization())
+        model.add(Conv2D(128, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
         model.add(BatchNormalization())
         model.add(Flatten())
         model.add(Dense(len(self.chars)))
@@ -349,8 +384,8 @@ class assign2:
 # (say you want to change the default temperature values)
 
 # %% id="ranking-costs"
-# obj.model = obj.build_one_layer_lstm(maxlen=40)
-# obj.main(temperature=[0.1, 0.2, 0.3, 0.4])
+# obj.model = obj.build_one_layer_lstm(maxlen=80)
+# obj.main(maxlen=80, num_iter=25, freq=25, modeltype='lstm', modelname='lstm_maxlen.h5')
 # obj.clear()
 
 # %% [markdown] id="U_HruLDn_OUI"
@@ -359,7 +394,12 @@ class assign2:
 # %% [markdown]
 # ### Modification 1
 
-# %% [markdown]
+# %% pycharm={"name": "#%%\n"}
+# obj.model = obj.build_one_layer_lstm(hidden_units=64)
+# obj.main(num_iter=25, freq=25, modelname='q3_1.h5')
+# obj.clear()
+
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Modification 2
 
 # %% id="uOhjyCuS_M62"
@@ -372,16 +412,30 @@ class assign2:
 # %% id="jxjOyzAC_zvt"
 # obj_q3_2.main(num_iter=25, freq=10, modeltype='lstm', modelname='q3_2_iter25.h5')
 
-# %% id="wiSvQIIsASCC"
+# %% id="wiSvQIIsASCC" pycharm={"name": "#%%\n"}
 # obj_q3_2.clear()
 
 # %% [markdown]
 # ### Modification 3
 
-# %% [markdown]
-# ### Modification 4
+# %%
+# obj.model = obj.build_one_layer_lstm(dropout=0.2)
+# obj.main(num_iter=25, freq=25, modelname='q3_3_1.h5')
+# obj.clear()
+
+# %% pycharm={"name": "#%%\n"}
+# obj.model = obj.build_one_layer_lstm(dropout=0.6)
+# obj.main(num_iter=25, freq=25, modelname='q3_3_2.h5')
+# obj.cle
 
 # %%
+# obj.model = obj.build_one_layer_lstm(dropout=0.2, recurrent_dropout=0.1)
+# obj.main(num_iter=25, freq=25, modelname='q3_3_3.h5')
+
+# %% [markdown] pycharm={"name": "#%% md\n"}
+# ### Modification 4
+
+# %% pycharm={"name": "#%%\n"}
 # obj = assign2()
 # obj.model = obj.build_two_layer_lstm(maxlen=40, hidden_units=128)
 # obj.main(num_iter=25, freq=2, modeltype='lstm')
@@ -389,10 +443,10 @@ class assign2:
 # obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
 # obj.clear()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Modification 5
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # obj = assign2()
 # input_shape = (40, len(obj.chars))
 # obj.model = Sequential()
@@ -418,7 +472,7 @@ class assign2:
 # obj.main(num_iter = 10, freq = 5, modeltype = 'gru')
 # obj.clear()
 
-# %% [markdown] id="bored-mountain"
+# %% [markdown] id="bored-mountain" pycharm={"name": "#%% md\n"}
 # ## Problem 4
 #
 # Here's how you can configure your model outside the class (alternatively, you can define a new method inside the class):
@@ -440,14 +494,14 @@ class assign2:
 # obj.main()
 # obj.clear()
 
-# %% [markdown] id="THBtk8f0HVG8"
+# %% [markdown] id="THBtk8f0HVG8" pycharm={"name": "#%% md\n"}
 # ### Mix 1
 
-# %% id="posted-diary"
+# %% id="posted-diary" pycharm={"name": "#%%\n"}
 # obj_q4_1 = assign2()
 # input_shape = (40, len(obj_q4_1.chars))
 
-# %% id="zWgIkmyWHx8f"
+# %% id="zWgIkmyWHx8f" pycharm={"name": "#%%\n"}
 # obj_q4_1.model = Sequential([
 #     Bidirectional(LSTM(64, return_sequences=True, dropout=0.1, recurrent_dropout=0), 
 #                   input_shape=input_shape),
@@ -465,7 +519,7 @@ class assign2:
 # %% id="Y9iuvl4bOTDD"
 # obj_q4_1.clear()
 
-# %% [markdown] id="beginning-applicant"
+# %% [markdown] id="beginning-applicant" pycharm={"name": "#%% md\n"}
 # ## Problem 5 - CNN
 
 # %% [markdown]
@@ -478,14 +532,12 @@ class assign2:
 # obj.clear()
 
 # %%
-# obj = assign2()
 # obj.model = obj.build_cnn_v1(filter_size=3)
 # obj.main(num_iter=25, modelname= "CNN_filter_3",modeltype='cnn')
 # obj.clear()
 
 
-# %%
-# obj = assign2()
+# %% pycharm={"name": "#%%\n"}
 # obj.model = obj.build_cnn_v1(filter_size=5)
 # obj.main(num_iter=25, modelname= "CNN_filter_5",modeltype='cnn')
 # obj.clear()
@@ -493,16 +545,14 @@ class assign2:
 # %% [markdown]
 # ### Part B
 
-# %% id="living-farmer"
-# obj = assign2()
+# %% pycharm={"name": "#%%\n"}
 # obj.model = obj.build_cnn_v2()
 # obj.main(num_iter=25, freq=2, modeltype='cnn')
 # model_name = 'cnn_b_less'
 # obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
 # obj.clear()
 
-# %%
-# obj = assign2()
+# %% pycharm={"name": "#%%\n"}
 # obj.model = obj.build_cnn_v3()
 # obj.main(num_iter=25, freq=2, modeltype='cnn')
 # model_name = 'cnn_b_more'
@@ -511,6 +561,66 @@ class assign2:
 
 # %% [markdown]
 # ### Part C
+
+# %% pycharm={"name": "#%%\n"}
+# obj.model = obj.build_cnn_v4()
+# obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_no_last_layer.h5')
+# obj.clear()
+
+# %% pycharm={"name": "#%%\n"}
+# obj.model = obj.build_cnn_v5()
+# obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_add_first_layer.h5')
+# obj.clear()
+
+# %% [markdown]
+# ### Part D
+
+# %% [markdown]
+# # filter_size_collection = []
+# # filter_number_collection = []
+# # loss_collection = []
+# # time_collection = []
+#
+# # for filter_size in [7,9,11]:
+# #     for filter_number in [64, 128, 256]:
+# #         obj = assign2()
+# #         obj.model = obj.build_cnn_v1(maxlen = 40, filter_size = filter_size, filter_number = filter_number)
+# #         obj.main(num_iter = 30, freq = 30, modeltype = 'cnn')
+# #         filter_size_collection.append(filter_size)
+# #         filter_number_collection.append(filter_number)
+# #         loss_collection.append(obj.final_loss)
+# #         time_collection.append(obj.total_time)
+# #         obj.clear()
+
+# %% id="living-farmer"
+# obj.model = obj.build_cnn_v2()
+# obj.main(num_iter=25, freq=2, modeltype='cnn')
+# model_name = 'cnn_b_less'
+# obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
+# obj.clear()
+
+# %%
+# obj.model = obj.build_cnn_v3()
+# obj.main(num_iter=25, freq=2, modeltype='cnn')
+# model_name = 'cnn_b_more'
+# obj.model.save_weights(f'/content/drive/MyDrive/Colab Notebooks/432/{model_name}.h5')
+# obj.clear()
+
+# %% [markdown]
+# ### Part C
+
+# %%
+# obj.model = obj.build_cnn_v4()
+# obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_no_last_layer.h5')
+# obj.clear()
+
+# %%
+# obj.model = obj.build_cnn_v5()
+# obj.main(maxlen=40, num_iter=25, freq=25, modeltype='cnn', modelname='cnn_add_first_layer.h5')
+# obj.clear()
+
+# %% [markdown]
+# ### Part D
 
 # %%
 # filter_size_collection = []
