@@ -143,14 +143,14 @@ class assign2:
         model.compile(loss='categorical_crossentropy', optimizer=optimizer)
         return model
     
-    def build_cnn_v1(self, maxlen=40):
+    def build_cnn_v1(self, maxlen=40, filter_size=5):
         input_shape_ = (maxlen, len(self.chars)) + (1,)
         model = Sequential()
         model.add(Conv2D(128, kernel_size=(2, len(self.chars)), activation='relu', input_shape=input_shape_))
         model.add(BatchNormalization())
-        model.add(Conv2D(256, kernel_size=(5, 1), activation='relu'))
+        model.add(Conv2D(256, kernel_size=(filter_size, 1), activation='relu'))
         model.add(BatchNormalization())
-        model.add(Conv2D(512, kernel_size=(5, 1), activation='relu'))
+        model.add(Conv2D(512, kernel_size=(filter_size, 1), activation='relu'))
         model.add(BatchNormalization())
         model.add(Flatten())
         model.add(Dense(len(self.chars)))
@@ -326,6 +326,7 @@ class assign2:
         self.hmap = None
         self.model = None
 
+
 # %% [markdown] id="declared-algeria"
 # ## Problem 1
 #
@@ -468,15 +469,27 @@ class assign2:
 # %% [markdown] id="beginning-applicant"
 # ## Problem 5 - CNN
 
-# %% id="basic-beatles"
-# obj = assign2()
-# obj.model = obj.build_cnn_v1()
-# obj.main(num_iter=3, freq=2, modeltype='cnn')
+# %% [markdown]
+# ### Part A
 
-# %% id="systematic-addition"
-# model_name = 'test_cnn'
-# obj.model.save_weights(f'{model_name}.h5')
-# obj.clear()
+# %%
+obj = assign2()
+obj.model = obj.build_cnn_v1(filter_size=3)
+obj.main(modelname= "CNN_filter_7",modeltype='cnn')
+obj.clear()
+
+# %%
+obj = assign2()
+obj.model = obj.build_cnn_v1()
+obj.main(modelname= "CNN_filter_3",modeltype='cnn')
+obj.clear()
+
+
+# %%
+obj = assign2()
+obj.model = obj.build_cnn_v1()
+obj.main(modelname= "CNN_filter_5",modeltype='cnn')
+obj.clear()
 
 # %% [markdown]
 # ### Part B
