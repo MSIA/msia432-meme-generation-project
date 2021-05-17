@@ -8,6 +8,7 @@ __pycache__/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 assignment2/*.ipynb
+!assignment2/submission_notebook.ipynb
 
 #PyCharm
 *.idea/
