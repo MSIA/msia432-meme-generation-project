@@ -326,7 +326,6 @@ class assign2:
         self.hmap = None
         self.model = None
 
-
 # %% [markdown] id="declared-algeria"
 # ## Problem 1
 #
@@ -473,23 +472,23 @@ class assign2:
 # ### Part A
 
 # %%
-obj = assign2()
-obj.model = obj.build_cnn_v1(filter_size=3)
-obj.main(modelname= "CNN_filter_7",modeltype='cnn')
-obj.clear()
+# obj = assign2()
+# obj.model = obj.build_cnn_v1(filter_size=7)
+# obj.main(num_iter=25, modelname= "CNN_filter_7",modeltype='cnn')
+# obj.clear()
 
 # %%
-obj = assign2()
-obj.model = obj.build_cnn_v1()
-obj.main(modelname= "CNN_filter_3",modeltype='cnn')
-obj.clear()
+# obj = assign2()
+# obj.model = obj.build_cnn_v1(filter_size=3)
+# obj.main(num_iter=25, modelname= "CNN_filter_3",modeltype='cnn')
+# obj.clear()
 
 
 # %%
-obj = assign2()
-obj.model = obj.build_cnn_v1()
-obj.main(modelname= "CNN_filter_5",modeltype='cnn')
-obj.clear()
+# obj = assign2()
+# obj.model = obj.build_cnn_v1(filter_size=5)
+# obj.main(num_iter=25, modelname= "CNN_filter_5",modeltype='cnn')
+# obj.clear()
 
 # %% [markdown]
 # ### Part B
