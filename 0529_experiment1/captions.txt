@@ -1,0 +1,13 @@
+Fig1 Pred1: what doesn't pull out
+Fig1 Pred2: what out memegenerator go for a meme
+
+Fig2 Pred1: i'm not your logo
+Fig2 Pred2: let me guess what making fun
+
+Fig3 Pred1: happy valentine's day this is <unk> because nobody cares
+
+Fig1 Real 1: y u so like crack
+Fig2 Real 1: i told you so
+Fig3 Real 1: looks like they need some freedom
+
+100 Average BLEU: 0.15
